@@ -122,6 +122,11 @@ The portfolio includes accessibility and performance considerations such as:
 - **GitHub:** [sunidhi-chouhan](https://github.com/sunidhi-chouhan)
 - **LinkedIn:** [Sunidhi Chouhan](https://www.linkedin.com/in/sunidhi-chouhan-732112223)
 
+## 🌐 Live Portfolio
+
+Explore my portfolio, projects, engineering notes, and more:
+
+**[Visit My Portfolio →](https://portfolio-chi-khaki-94.vercel.app/)**
 ---
 
 *Built with curiosity, care, and a little bit of moonlight.* 🌙

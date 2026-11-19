@@ -100,10 +100,18 @@
   }
 }
 
+/* Only what the copy needs to read; the bottom stays open so the night runs on. */
 .hero-scrim {
   background:
-    linear-gradient(180deg, rgb(7 11 20 / 0.84) 0%, rgb(7 11 20 / 0.22) 24%, rgb(7 11 20 / 0.08) 46%, rgb(7 11 20 / 0.58) 74%, rgb(7 11 20 / 0.9) 100%),
-    linear-gradient(90deg, rgb(7 11 20 / 0.66) 0%, rgb(7 11 20 / 0.24) 40%, transparent 66%);
+    linear-gradient(180deg, rgb(7 11 20 / 0.6) 0%, rgb(7 11 20 / 0.1) 22%, transparent 45%),
+    radial-gradient(ellipse 70% 60% at 18% 78%, rgb(7 11 20 / 0.62), transparent 70%);
+  /* Fade the scrim out before the section ends so no edge shows. */
+  mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
+}
+
+.contact-scrim {
+  background: radial-gradient(ellipse 75% 65% at 22% 80%, rgb(7 11 20 / 0.72), transparent 72%);
+  mask-image: linear-gradient(to bottom, transparent, #000 30%);
 }
 
 @media (max-height: 520px) {
@@ -130,7 +138,9 @@
 
 @media (max-width: 420px) {
   .hero-scrim {
-    background: linear-gradient(180deg, rgb(7 11 20 / 0.92) 0%, rgb(7 11 20 / 0.8) 20%, rgb(7 11 20 / 0.72) 48%, rgb(7 11 20 / 0.88) 100%);
+    background:
+      linear-gradient(180deg, rgb(7 11 20 / 0.6) 0%, transparent 30%),
+      linear-gradient(0deg, rgb(7 11 20 / 0.55) 0%, rgb(7 11 20 / 0.45) 40%, transparent 70%);
   }
 
   .hero-copy {
@@ -285,14 +295,269 @@
   }
 }
 
+/* ---------- Opening sequence ---------- */
+
+/* The hero entrance waits for the loader to lift. */
+html:not([data-ready]) .hero-rise,
+html:not([data-ready]) .hero-chars .split-piece {
+  animation-play-state: paused;
+}
+
+.loader {
+  clip-path: inset(0 0 0 0);
+}
+
+.loader-out {
+  animation: curtain-up 1.05s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+.loader-out > div {
+  animation: loader-drift 1.05s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+.loader-char {
+  display: inline-block;
+  animation: char-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.loader-kicker {
+  animation: hero-rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes curtain-up {
+  to {
+    clip-path: inset(0 0 100% 0);
+  }
+}
+
+@keyframes loader-drift {
+  to {
+    opacity: 0;
+    transform: translateY(-12vh);
+  }
+}
+
+@keyframes char-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.4em) rotate(4deg);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+/* ---------- Split text ---------- */
+
+.split-word {
+  white-space: nowrap;
+}
+
+.split-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  /* Room for the handwriting's swashes, without moving the line box. */
+  padding: 0.14em 0.04em 0.2em;
+  margin: -0.14em -0.04em -0.2em;
+}
+
+.split-piece {
+  display: inline-block;
+  will-change: transform;
+}
+
+.hero-chars .split-piece {
+  animation: piece-rise 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--split-delay, 0s);
+}
+
+.reveal-arm .split-piece {
+  transform: translateY(105%);
+}
+
+.reveal-in .split-piece {
+  animation: piece-rise 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--split-delay, 0s);
+}
+
+@keyframes piece-rise {
+  from {
+    transform: translateY(105%) rotate(3deg);
+  }
+  to {
+    transform: none;
+  }
+}
+
+/* ---------- Header ---------- */
+
+.site-header {
+  background: transparent;
+  transition:
+    background-color 0.5s ease,
+    backdrop-filter 0.5s ease,
+    translate 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.site-header[data-solid='true'],
+.site-header[data-open='true'] {
+  background-color: rgb(7 11 20 / 0.72);
+  backdrop-filter: blur(14px) saturate(1.2);
+}
+
+.site-header[data-hidden='true']:not([data-open='true']) {
+  translate: 0 -110%;
+}
+
+.nav-link {
+  position: relative;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0.7rem;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav-link:hover::after,
+.nav-link[aria-current]::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* ---------- Scroll cue ---------- */
+
+.scroll-cue {
+  position: relative;
+  display: inline-block;
+  width: 1px;
+  height: 2.25rem;
+  overflow: hidden;
+  background: rgb(243 238 228 / 0.18);
+}
+
+.scroll-cue::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--color-moon);
+  animation: cue-fall 2.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes cue-fall {
+  0% {
+    transform: translateY(-100%);
+  }
+  55%,
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+/* ---------- Cursor ---------- */
+
+.cursor-ring {
+  width: 0;
+  height: 0;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.cursor-ring[data-on='true'] {
+  opacity: 1;
+}
+
+.cursor-ring > span {
+  position: absolute;
+  left: -14px;
+  top: -14px;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 1px solid rgb(240 226 176 / 0.55);
+  box-shadow: 0 0 24px rgb(240 226 176 / 0.12);
+  transition:
+    scale 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.45s ease,
+    border-color 0.45s ease;
+}
+
+.cursor-ring[data-hot='true'] > span {
+  scale: 1.9;
+  background-color: rgb(240 226 176 / 0.08);
+  border-color: rgb(240 226 176 / 0.8);
+}
+
+.cursor-ring[data-press='true'] > span {
+  scale: 0.8;
+}
+
+/* ---------- Project plates (scroll-driven where supported) ---------- */
+
+@supports (animation-timeline: view()) {
+  .plate-reveal {
+    animation: plate-open linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 40%;
+  }
+
+  .plate-drift {
+    scale: 1.08;
+    animation: plate-drift linear both;
+    animation-timeline: view();
+    animation-range: cover;
+  }
+
+  .group:hover .plate-drift {
+    scale: 1.11;
+  }
+}
+
+@keyframes plate-open {
+  from {
+    clip-path: inset(14% 8% 14% 8% round 4px);
+  }
+  to {
+    clip-path: inset(0 0 0 0 round 0);
+  }
+}
+
+@keyframes plate-drift {
+  from {
+    translate: 0 -4%;
+  }
+  to {
+    translate: 0 4%;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .moon-breathe,
   .panel-in,
   .sheet-in,
   .hero-rise,
   .hero-line-in,
-  .reveal-in {
+  .reveal-in,
+  .split-piece,
+  .scroll-cue::after,
+  .plate-reveal,
+  .plate-drift {
     animation: none;
+  }
+
+  .split-piece {
+    transform: none;
   }
 
   .hero-rise,
@@ -300,6 +565,82 @@
   .reveal-arm,
   .reveal-in {
     opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- Pointer effects (see lib/pointer-effects.ts) ---------- */
+
+.spotlight {
+  position: relative;
+  isolation: isolate;
+}
+
+.spotlight::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(320px circle at var(--mx, 50%) var(--my, 50%), rgb(240 226 176 / 0.07), transparent 70%);
+  transition: opacity 0.5s ease;
+}
+
+.spotlight::after {
+  content: '';
+  position: absolute;
+  inset: -1px 0 auto;
+  height: 1px;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(180px circle at var(--mx, 50%) 0, rgb(240 226 176 / 0.7), transparent 70%);
+  transition: opacity 0.5s ease;
+}
+
+.spotlight:hover::before,
+.spotlight:hover::after {
+  opacity: 1;
+}
+
+.tilt-stage {
+  perspective: 1200px;
+}
+
+.tilt {
+  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+/* A slow sheen passing over the small section labels. */
+.shine {
+  background: linear-gradient(100deg, currentColor 40%, rgb(255 250 235) 50%, currentColor 60%) 0 0 / 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shine 6s ease-in-out infinite;
+}
+
+@keyframes shine {
+  from {
+    background-position: 100% 0;
+  }
+  60%,
+  to {
+    background-position: -50% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shine {
+    animation: none;
+    -webkit-text-fill-color: currentColor;
+    background: none;
+  }
+
+  .tilt {
     transform: none;
   }
 }

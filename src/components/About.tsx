@@ -1,14 +1,15 @@
 import { site } from '../content/site.ts'
 import { Reveal } from './Reveal.tsx'
+import { SplitText } from './SplitText.tsx'
 
 export function About() {
   return (
     <section id="about" aria-labelledby="about-title" className="section-offset relative px-5 py-24 sm:px-8 md:py-32">
       <div className="relative mx-auto min-w-0 max-w-6xl">
         <Reveal>
-          <p className="text-xs tracking-[0.22em] text-violet uppercase">About</p>
+          <p className="shine text-xs tracking-[0.22em] text-violet uppercase">About</p>
           <h2 id="about-title" className="mt-6 max-w-4xl font-display text-[clamp(1.75rem,8vw,3rem)] leading-[0.95] break-words text-sand sm:text-6xl lg:text-7xl">
-            {site.aboutHeadline}
+            <SplitText text={site.aboutHeadline} baseDelay={0.1} />
           </h2>
         </Reveal>
         <Reveal delay={0.16}>

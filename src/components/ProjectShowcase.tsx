@@ -1,4 +1,6 @@
 import type { Work } from '../content/site.ts'
+import { Reveal } from './Reveal.tsx'
+import { SplitText } from './SplitText.tsx'
 
 type ProjectShowcaseProps = {
   work: Work
@@ -11,16 +13,18 @@ export function ProjectShowcase({ work, seen, reverse, onOpen }: ProjectShowcase
   return (
     <article className="group border-t border-sand/15 py-12 first:border-t-0 first:pt-2 md:py-16">
       <div className={`grid items-center gap-8 lg:grid-cols-12 lg:gap-16 ${reverse ? 'lg:[&>div:first-child]:order-2' : ''}`}>
-        <div className="lg:col-span-7">
-          <ProjectPlate work={work} />
+        <div className="tilt-stage lg:col-span-7">
+          <div data-tilt className="tilt">
+            <ProjectPlate work={work} />
+          </div>
         </div>
-        <div className="min-w-0 lg:col-span-5">
+        <Reveal className="min-w-0 lg:col-span-5">
           <p className="text-xs tracking-[0.22em] text-muted uppercase">
             {work.index}
             {seen ? <span className="ml-3 text-moon">Opened</span> : null}
           </p>
           <h3 className="mt-3 max-w-full font-display text-[clamp(1.75rem,8vw,3.75rem)] leading-[0.92] break-words text-sand">
-            {work.title}
+            <SplitText text={work.title} by="char" baseDelay={0.08} step={0.03} />
           </h3>
           <p className="mt-5 max-w-full text-sm tracking-[0.16em] break-words text-violet uppercase">
             {work.role}
@@ -57,7 +61,7 @@ export function ProjectShowcase({ work, seen, reverse, onOpen }: ProjectShowcase
               </a>
             ) : null}
           </div>
-        </div>
+        </Reveal>
       </div>
     </article>
   )
@@ -67,7 +71,7 @@ function ProjectPlate({ work }: { work: Work }) {
   return (
     <div
       data-destination={work.id}
-      className="relative aspect-[16/10] overflow-hidden bg-[#0c1524] [mask-image:linear-gradient(180deg,transparent,black_2%,black_98%,transparent)]"
+      className="plate-reveal relative aspect-[16/10] overflow-hidden bg-[#0c1524] [mask-image:linear-gradient(180deg,transparent,black_2%,black_98%,transparent)]"
     >
       <div className="pointer-events-none absolute inset-y-0 left-0 z-[1] w-1/3 -translate-x-full bg-[linear-gradient(100deg,transparent,rgba(243,234,208,0.16),transparent)] transition duration-700 ease-out group-hover:translate-x-[280%] motion-reduce:transition-none" />
       {work.image ? (
@@ -79,7 +83,7 @@ function ProjectPlate({ work }: { work: Work }) {
             width={1024}
             height={540}
             loading="lazy"
-            className="h-full w-full object-contain object-center transition duration-700 ease-out group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+            className="plate-drift h-full w-full object-contain object-center transition duration-700 ease-out group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
           />
         </picture>
       ) : (

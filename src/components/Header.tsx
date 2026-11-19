@@ -17,6 +17,33 @@ export function Header({ soundOn, onToggleSound }: HeaderProps) {
   const [current, setCurrent] = useState<string | null>(null)
   const [open, setOpen] = useState(false)
   const menuButtonRef = useRef<HTMLButtonElement>(null)
+  const headerRef = useRef<HTMLElement>(null)
+
+  // Clear over the hero, frosted once scrolled; tucks away on the way down.
+  useEffect(() => {
+    const header = headerRef.current
+    if (!header) return
+    let last = window.scrollY
+    let frame = 0
+    const update = () => {
+      frame = 0
+      const y = window.scrollY
+      header.dataset.solid = y > 24 ? 'true' : 'false'
+      if (Math.abs(y - last) > 6) {
+        header.dataset.hidden = y > last && y > window.innerHeight * 0.6 ? 'true' : 'false'
+        last = y
+      }
+    }
+    const onScroll = () => {
+      if (!frame) frame = window.requestAnimationFrame(update)
+    }
+    update()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.cancelAnimationFrame(frame)
+    }
+  }, [])
 
   useEffect(() => {
     const sections = NAV.map((item) => document.getElementById(item.id)).filter(
@@ -67,7 +94,12 @@ export function Header({ soundOn, onToggleSound }: HeaderProps) {
 
   return (
     <header
-      className="fixed inset-x-0 top-0 z-30 bg-ink/85 pt-[env(safe-area-inset-top)] backdrop-blur-md"
+      ref={headerRef}
+      data-open={open ? 'true' : 'false'}
+      className="site-header fixed inset-x-0 top-0 z-30 pt-[env(safe-area-inset-top)]"
+      onFocus={() => {
+        if (headerRef.current) headerRef.current.dataset.hidden = 'false'
+      }}
     >
       <div className="relative mx-auto flex w-full max-w-6xl items-center justify-between gap-3 px-5 py-3 sm:px-8">
         <button
@@ -85,7 +117,7 @@ export function Header({ soundOn, onToggleSound }: HeaderProps) {
             <a
               key={item.id}
               href={item.href}
-              className={`${linkClass} ${current === item.id ? 'text-sand' : 'text-muted hover:text-sand'}`}
+              className={`nav-link ${linkClass} ${current === item.id ? 'text-sand' : 'text-muted hover:text-sand'}`}
               aria-current={current === item.id ? 'location' : undefined}
               onClick={(event) => navigate(event, item.id)}
             >

@@ -1,14 +1,17 @@
 import { site } from '../content/site.ts'
 import { Reveal } from './Reveal.tsx'
+import { SplitText } from './SplitText.tsx'
 
 export function Contact() {
   return (
     <section id="contact" aria-labelledby="contact-title" className="section-offset relative min-h-svh">
+      <div aria-hidden="true" className="contact-scrim pointer-events-none absolute inset-0" />
       <div className="relative z-10 flex min-h-svh items-end px-5 py-24 sm:px-8 md:py-32">
         <div className="mx-auto w-full min-w-0 max-w-6xl">
           <Reveal>
-            <p className="text-xs tracking-[0.22em] text-moon uppercase">Contact</p>
-            <h2 id="contact-title" className="mt-5 max-w-3xl font-display text-[clamp(1.85rem,9vw,3rem)] leading-[0.95] break-words text-sand sm:text-7xl">{site.contact.title}</h2>
+            <p className="shine text-xs tracking-[0.22em] text-moon uppercase">Contact</p>
+            <h2 id="contact-title" className="mt-5 max-w-3xl font-display text-[clamp(1.85rem,9vw,3rem)] leading-[0.95] break-words text-sand sm:text-7xl"><SplitText text={site.contact.title} baseDelay={0.1} />
+            </h2>
             <p className="mt-6 max-w-xl text-base leading-relaxed font-light text-sand/90">{site.contact.body}</p>
             <ul className="mt-12 grid gap-8 sm:grid-cols-2">
               {site.links.map((link) => {
